@@ -23,9 +23,9 @@ def setcat(cat_name, tuser_id):
         d = {'cat_name': cat_name, 'tuser_id': tuser_id}
         with engine.begin() as conn:
             conn.execute(s, d)
-        return f'{cat_name} is added to your category list.'
+        return True
     else:
-        return 'Such a category already exist. Use /list to see all your categories.'
+        return False
 
 
 # TODO when you delete cat the records of it should be also deleted from time_track
