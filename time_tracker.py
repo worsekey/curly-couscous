@@ -20,8 +20,10 @@ logging.basicConfig(
     level=logging.INFO
 )
 
-NO, YES = range(2)
+# Stages
 START_ROUTES, END_ROUTES = range(2)
+# Callback data
+ONE, TWO, THREE, FOUR = range(4)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -46,7 +48,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
 
-    """Checks if the command used right and adds category to the databse,
+    """Checks if the command used right and adds category to the database,
        otherwise shows the message how to use it right.
        Then asks user if that is what he/she/other wanted to add as their
        category name and adds if yes, sends how to use /add command reminder again
@@ -56,33 +58,25 @@ async def add(update: Update, context: ContextTypes.DEFAULT_TYPE) -> int:
     user_id = update.message.from_user['id']
     keyboard = [
         [
-            InlineKeyboardButton("Yes", callback_data=str(YES)),
-            InlineKeyboardButton("No", callback_data=str(NO)),
+            InlineKeyboardButton("Yes", callback_data=str(ONE)),
+            InlineKeyboardButton("No", callback_data=str(TWO)),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    if cat_name:
-        await update.message.reply_text(f'Do you want to add {cat_name}', reply_markup=reply_markup)
-        return START_ROUTES
-        # if setcat(cat_name, user_id):
-        #     await update.message.reply_text(f'{cat_name} is added to your category list.')
-        # else:
-        #     await update.message.reply_text('Such a category already exist. Use /list to see all your categories.')
-
-    else:
-        await update.message.reply_text("Usage: /add <category>")
+    await update.message.reply_text(f'Do you want to add {cat_name}', reply_markup=reply_markup)
+    return START_ROUTES
 
 
 async def add_positive(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    await update.message.reply_text('Confirmed')
+    await context.bot.send_message(chat_id=update.effective_chat.id, text='Confirmed')
 
 
 async def add_negative(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
-    await update.message.reply_text('Denied')
+    await context.bot.send_message(chat_id=update.effective_chat.id, text='Denied')
 
 
 if __name__ == '__main__':
@@ -92,10 +86,8 @@ if __name__ == '__main__':
         entry_points=[CommandHandler('add', add)],
         states={
             START_ROUTES: [
-                CallbackQueryHandler(add_positive, pattern='^' + str(YES) + '$')
-            ],
-            END_ROUTES: [
-                CallbackQueryHandler(add_negative, pattern='^' + str(NO) + '$')
+                CallbackQueryHandler(add_positive, pattern='^' + str(ONE) + '$'),
+                CallbackQueryHandler(add_negative, pattern='^' + str(TWO) + '$')
             ]
         },
         fallbacks=[CommandHandler('start', start)]
@@ -103,7 +95,6 @@ if __name__ == '__main__':
 
     # Handlers
     application.add_handler(CommandHandler('start', start))
-    application.add_handler(CommandHandler('add', add))
 
     # Add ConversationHandler to application that will be used for handling updates
     application.add_handler(conv_handler)
