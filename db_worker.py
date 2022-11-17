@@ -36,9 +36,9 @@ def delcat(cat_name, tuser_id):
         d = {'cat_name': cat_name, 'tuser_id': tuser_id}
         with engine.begin() as conn:
             conn.execute(s, d)
-        return f'{cat_name} deleted.'
+        return f'{cat_name} deleted'
     else:
-        return 'There is no such category. Use /list to see all your categories.'
+        return 'There is no such category.\nUse /list to see all your categories.'
 
 
 def startcat(cat_name, tuser_id):
