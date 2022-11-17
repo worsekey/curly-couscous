@@ -73,11 +73,26 @@ async def delete(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                                               'available by command /list')
 
 
+async def list_cat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user['id']
+    cat_list = listcat(user_id)
+    if cat_list:
+        cats = '\n'.join(cat_list)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=f'Your categories are\n\n{cats}\n\n'
+                                                                              f'To start tracking one of them use\n'
+                                                                              f'/begin <category>')
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text="You don't have categories yet.\n"
+                                                                              "start by adding at least one with\n"
+                                                                              "/add <category>")
+
+
 if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN).build()
     # Handlers
     application.add_handler(CommandHandler('start', start))
     application.add_handler(CommandHandler('add', add))
     application.add_handler(CommandHandler('del', delete))
+    application.add_handler(CommandHandler('list', list_cat))
 
     application.run_polling()
