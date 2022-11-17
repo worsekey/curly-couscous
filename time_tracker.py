@@ -33,7 +33,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     else:
         await context.bot.send_message(chat_id=update.effective_chat.id,
                                        text="You have nothing to track yet, "
-                                            "use /add <category> to set up a category to track time for")
+                                            "use \n\n/add <category>\n\n to set up a category to track time for")
 
 
 async def add(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -87,6 +87,25 @@ async def list_cat(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                                                               "/add <category>")
 
 
+async def begin(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user['id']
+    cat_name = update.message.text.partition(' ')[2]
+    if cat_name:
+        msg = startcat(cat_name, user_id)
+        await context.bot.send_message(chat_id=update.effective_chat.id, text=msg)
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text='Usage: /begin <category>')
+
+
+async def end(update:Update, context: ContextTypes.DEFAULT_TYPE):
+    user_id = update.message.from_user['id']
+    cat_name = update.message.text.partition(' ')[2]
+    if cat_name:
+        stopcat(cat_name, user_id)
+    else:
+        await context.bot.send_message(chat_id=update.effective_chat.id, text='Usage: /end <category>')
+
+
 if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN).build()
     # Handlers
@@ -94,5 +113,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('add', add))
     application.add_handler(CommandHandler('del', delete))
     application.add_handler(CommandHandler('list', list_cat))
+    application.add_handler(CommandHandler('begin', begin))
+    application.add_handler(CommandHandler('end', end))
 
     application.run_polling()

@@ -54,9 +54,9 @@ def startcat(cat_name, tuser_id):
         d = {'cat_id': cat_id, 'start_date': date.today(), 'start_time': time()}
         with engine.begin() as conn:
             conn.execute(s, d)
-        return f'{cat_name} started'
+        return f'{cat_name} started. To stop it use\n\n/end {cat_name}'
     else:
-        return 'No such category'
+        return 'No such category. Use /list to see all your categories.'
 
 
 def stopcat(cat_name, tuser_id):
@@ -87,12 +87,3 @@ def stopcat(cat_name, tuser_id):
     d = {'stop_date': stop_date, 'stop_time': stop_time, 'time_delta': time_delta, 'rec_id': rec_id}
     with engine.begin() as conn:
         conn.execute(s, d)
-
-
-
-
-
-
-
-
-
