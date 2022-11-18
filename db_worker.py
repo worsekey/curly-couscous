@@ -2,11 +2,11 @@ from sqlalchemy import create_engine, text, select
 from datetime import date
 from time import time
 
-engine = create_engine('sqlite:///db.sqlite')
+engine = create_engine('sqlite:///db_2.sqlite')
 
 
 def listcat(tuser_id):
-    s = text('SELECT cat_name FROM cats WHERE tuser_id == :tuser_id')
+    s = text('SELECT cat_name FROM category WHERE tuser_id == :tuser_id')
     d = {'tuser_id': tuser_id}
     cat_list = []
     with engine.begin() as conn:
@@ -19,7 +19,7 @@ def setcat(cat_name, tuser_id):
     # first we get the list of existing categories to check if user tries to set already existing category
     cat_list = listcat(tuser_id)
     if cat_name not in cat_list:
-        s = text('INSERT INTO cats (cat_name, tuser_id) VALUES (:cat_name, :tuser_id)')
+        s = text('INSERT INTO category (cat_name, tuser_id) VALUES (:cat_name, :tuser_id)')
         d = {'cat_name': cat_name, 'tuser_id': tuser_id}
         with engine.begin() as conn:
             conn.execute(s, d)
@@ -32,7 +32,7 @@ def setcat(cat_name, tuser_id):
 def delcat(cat_name, tuser_id):
     cat_list = listcat(tuser_id)
     if cat_name in cat_list:
-        s = text('DELETE FROM cats WHERE cat_name == :cat_name AND tuser_id == :tuser_id')
+        s = text('DELETE FROM category WHERE cat_name == :cat_name AND tuser_id == :tuser_id')
         d = {'cat_name': cat_name, 'tuser_id': tuser_id}
         with engine.begin() as conn:
             conn.execute(s, d)
@@ -42,8 +42,8 @@ def delcat(cat_name, tuser_id):
 
 
 def startcat(cat_name, tuser_id):
-    # first we get cat_id from cats table. Probably it can be done in one statement together with the next one
-    s = text('SELECT id FROM cats WHERE cat_name == :cat_name AND tuser_id == :tuser_id')
+    # first we get cat_id from category table. Probably it can be done in one statement together with the next one
+    s = text('SELECT id FROM category WHERE cat_name == :cat_name AND tuser_id == :tuser_id')
     d = {'cat_name': cat_name, 'tuser_id': tuser_id}
     with engine.begin() as conn:
         for row in conn.execute(s, d):
@@ -62,7 +62,7 @@ def startcat(cat_name, tuser_id):
 def stopcat(cat_name, tuser_id):
     stop_time = time()
     # first we get id of the category we want to stop
-    s = text('SELECT id FROM cats WHERE cat_name==:cat_name AND tuser_id==:tuser_id')
+    s = text('SELECT id FROM category WHERE cat_name==:cat_name AND tuser_id==:tuser_id')
     d = {'cat_name': cat_name, 'tuser_id': tuser_id}
     with engine.begin() as conn:
         for row in conn.execute(s, d):
