@@ -23,9 +23,9 @@ class Category(Base):
 
     id = Column(Integer(), primary_key=True)
     cat_name = Column(String(50))
-    tuser_id = Column(String(), ForeignKey('user.tuser_id'))
+    tuser_id = Column(String(12))
 
-    time = relationship('Time', cascade='all, delete', backref='category', passive_deletes=True)
+    # time = relationship('Time', cascade='all, delete', backref='category', passive_deletes=True)
 
 
 class Time(Base):
