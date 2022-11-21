@@ -1,6 +1,17 @@
-from sqlalchemy import create_engine, text, select
+from sqlalchemy import create_engine, text, event
 from datetime import date
 from time import time
+from sqlalchemy.engine import Engine
+
+
+# enforcing foreign key constraint
+# it doesn't work by default in sqlite3. who knew
+@event.listens_for(Engine, "connect")
+def set_sqlite_pragma(dbapi_connection, connection_record):
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
+
 
 engine = create_engine('sqlite:///db_2.sqlite')
 
