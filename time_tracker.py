@@ -1,24 +1,8 @@
 from db_worker import setcat, delcat, listcat, stopcat, startcat
-from telegram.ext import (ApplicationBuilder,
-                          CommandHandler,
-                          MessageHandler,
-                          ContextTypes,
-                          ConversationHandler,
-                          CallbackQueryHandler)
-from telegram import (Update,
-                      KeyboardButton,
-                      ReplyKeyboardMarkup,
-                      InlineKeyboardButton,
-                      InlineKeyboardMarkup,
-                      )
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+from telegram import Update
 from secret import TOKEN
-from filters import stopfilter, startfilter
 import logging
-
-logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    level=logging.INFO
-)
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -106,7 +90,12 @@ async def end(update:Update, context: ContextTypes.DEFAULT_TYPE):
         await context.bot.send_message(chat_id=update.effective_chat.id, text='Usage: /end <category>')
 
 
-if __name__ == '__main__':
+def main():
+    logging.basicConfig(
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        level=logging.INFO
+    )
+
     application = ApplicationBuilder().token(TOKEN).build()
     # Handlers
     application.add_handler(CommandHandler('start', start))
@@ -117,3 +106,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler('end', end))
 
     application.run_polling()
+
+
+if __name__ == '__main__':
+    main()

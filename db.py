@@ -6,7 +6,7 @@ from sqlalchemy import (Date,
                         ForeignKey,
                         create_engine
                         )
-from sqlalchemy.orm import relationship, declarative_base
+from sqlalchemy.orm import declarative_base
 
 Base = declarative_base()
 
@@ -24,8 +24,6 @@ class Category(Base):
     id = Column(Integer(), primary_key=True)
     cat_name = Column(String(50))
     tuser_id = Column(String(12))
-
-    # time = relationship('Time', cascade='all, delete', backref='category', passive_deletes=True)
 
 
 class Time(Base):
